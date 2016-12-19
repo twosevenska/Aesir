@@ -9,6 +9,8 @@ sudo apt-get update
 
 # Install git and zsh prerequisites
 echo 'Installing git and zsh'
+sudo add-apt-repository ppa:git-core/ppa
+sudo apt-get update
 sudo apt-get -y install git
 sudo apt-get -y install zsh
 git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
