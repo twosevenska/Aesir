@@ -55,7 +55,13 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.network "private_network", ip: "192.168.27.72"
+  #config.vm.network "private_network", ip: "192.168.27.72"
+
+  # Setup Hostname
+  config.vm.hostname = "aesir.dev"
+
+  # Allows forward agent
+  config.ssh.forward_agent = true
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
