@@ -5,9 +5,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	"aesir/formatter"
-	"aesir/server"
-	"aesir/utils"
+	"Aesir/forge/server"
+	"Aesir/splashes"
 )
 
 func main() {
@@ -24,18 +23,12 @@ func main() {
 		log.SetLevel(log.InfoLevel)
 	}
 
-	log.SetFormatter(&formatter.SimpleFormatter{})
+	splashes.Splash("forge")
 
-	utils.Splash()
+	log.Info("The flames are now roaring in the forge")
 
-	log.Info("Aesir is starting")
+	server.RunServer()
 
-	/*
-	  mongo := mongo.Connect("aesir", "aesir", conf.MongoPassword)
-	*/
-
-	server.RunServer(conf, mongo, producer, nflex, babel)
-
-	log.Info("The council has now finished.")
+	log.Info("The flames have been extinguished.")
 	log.Exit(0)
 }
