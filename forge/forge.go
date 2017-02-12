@@ -11,10 +11,8 @@ import (
 
 func main() {
 	debug := flag.Bool("debug", false, "Display verbose debug output")
+
 	flag.Parse()
-	if *version {
-		printVersion()
-	}
 
 	if *debug {
 		log.SetLevel(log.DebugLevel)

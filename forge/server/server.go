@@ -21,12 +21,12 @@ func CreateRouter() *gin.Engine {
 		})
 	})
 
-	api := r.Group("/forge/api", LobbyAuthentication())
+	/*api := r.Group("/forge/api", Auth())
 	{
 		//api.GET("/", controllers.INSERT_CONTROLLER_FUNCTION_HERE)
-	}
+	}*/
 
-	if config.Debug {
+	if log.GetLevel() == log.DebugLevel {
 		// automatically add debugging routers
 		ginpprof.Wrapper(r)
 	}
@@ -54,7 +54,7 @@ func Logrus(logger *log.Logger) gin.HandlerFunc {
 		c.Next()
 
 		entry := logger.WithFields(log.Fields{
-			"request": &request,
+		//add fields
 		})
 
 		if len(c.Errors) > 0 {
