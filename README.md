@@ -58,3 +58,7 @@ If this all sounds confusing blame twosevenska. Anyways here's a couple of examp
 4. Nerd is now stuck creating a new char or watching for the rest of the session.
 
 So yeah if you went through those examples you might've noticed a couple of things. Not all of them are bad but some stuff could certainly be improved. That's part of our objective.
+
+## Why Aesir?
+
+Sounds cool, Norse myth is popular in RPG's and it's all about this council of Norse Gods. Seemed appropriate. 
