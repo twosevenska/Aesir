@@ -1,8 +1,13 @@
-package: Aesir
+package: github.com/twosevenska/aesir
 import:
 - package: github.com/DeanThompson/ginpprof
 - package: github.com/Sirupsen/logrus
-  version: ^0.11.2
+  version: ^0.11.5
 - package: github.com/fvbock/endless
 - package: github.com/gin-gonic/gin
   version: ^1.1.4
+testImport:
+- package: github.com/smartystreets/goconvey
+  version: ^1.6.2
+  subpackages:
+  - convey

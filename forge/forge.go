@@ -4,9 +4,8 @@ import (
 	"flag"
 
 	log "github.com/Sirupsen/logrus"
-
-	"Aesir/forge/server"
-	"Aesir/splashes"
+	"github.com/twosevenska/aesir/forge/server"
+	"github.com/twosevenska/aesir/splashes"
 )
 
 func main() {
