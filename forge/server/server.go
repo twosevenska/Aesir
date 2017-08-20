@@ -9,9 +9,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// CreateRouter creates a gin Engine and adds endpoints
-func CreateRouter() *gin.Engine {
+// Config is a populated by env variables and Vault
+type Config struct {
+	Debug         bool     `envconfig:"debug" default:"false"`
+	MongoHosts    []string `envconfig:"mongo_hosts" default:"mongo.dev:27017"`
+	MongoDBName   string   `envconfig:"mongo_dbname" default:"forge"`
+	MongoUser     string   `envconfig:"mongo_user" default:"forge"`
+	MongoPassword string   `envconfig:"mongo_password" default:"forge1234"`
+}
 
+// ContextParams holds the objects required to initialise the server
+type ContextParams struct {
+	Config Config
+}
+
+// Run starts the gin Router and listens forever, recovering from panics
+func Run(c Config) {
+
+	contextParams := ContextParams{
+		Config: c,
+	}
+
+	r := CreateRouter(&contextParams)
+
+	endless.DefaultHammerTime = 10 * time.Second
+	endless.DefaultReadTimeOut = 30 * time.Second
+	endless.ListenAndServe(":7001", r)
+}
+
+// CreateRouter creates a gin Engine and adds endpoints
+func CreateRouter(contextParams *ContextParams) *gin.Engine {
+
+	//TODO: Add custom validator later on
 	r := gin.New()
 	r.Use(Logrus(log.StandardLogger()), gin.Recovery())
 
@@ -26,24 +55,12 @@ func CreateRouter() *gin.Engine {
 		//api.GET("/", controllers.INSERT_CONTROLLER_FUNCTION_HERE)
 	}*/
 
-	if log.GetLevel() == log.DebugLevel {
-		// automatically add debugging routers
+	if contextParams.Config.Debug {
+		// automatically add routers for net/http/pprof
+		// e.g. /debug/pprof, /debug/pprof/heap, etc.
 		ginpprof.Wrapper(r)
 	}
 	return r
-}
-
-// RunServer starts the gin Router and listens forever, recovering from panics
-func RunServer() {
-
-	// We should add the init for the forger here
-	// Reminder, forger is the go file responsible for working on the forge
-
-	r := CreateRouter()
-
-	endless.DefaultHammerTime = 10 * time.Second
-	endless.DefaultReadTimeOut = 30 * time.Second
-	endless.ListenAndServe(":7001", r)
 }
 
 // Logrus midleware
