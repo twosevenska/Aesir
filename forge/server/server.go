@@ -26,11 +26,11 @@ type ContextParams struct {
 }
 
 // Run starts the gin Router and listens forever, recovering from panics
-func Run(c Config, mc *mongo.Client) {
+func Run(c Config) {
 
 	contextParams := ContextParams{
 		Config:      c,
-		MongoClient: mc,
+		MongoClient: setupDB(c),
 	}
 
 	r := CreateRouter(&contextParams)
@@ -66,6 +66,31 @@ func CreateRouter(contextParams *ContextParams) *gin.Engine {
 		ginpprof.Wrapper(r)
 	}
 	return r
+}
+
+func setupDB(c Config) *mongo.Client {
+
+	dbIndexes := []mongo.Index{
+		mongo.Index{
+			Collection: "critters",
+			Keys:       []string{"id"},
+			Unique:     true,
+		},
+	}
+
+	sessionInfo := mongo.SessionConf{
+		MongoHosts: c.MongoHosts,
+		DB:         c.MongoDBName,
+		User:       c.MongoUser,
+		Password:   c.MongoPassword,
+		Indexes:    dbIndexes,
+	}
+
+	mongoClient, err := mongo.Connect(sessionInfo)
+	if err != nil {
+		log.Fatalf("Failed to connect to MongoDB: %s", err)
+	}
+	return mongoClient
 }
 
 // ContextObjects attaches backend clients to the API context

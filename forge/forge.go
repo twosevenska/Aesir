@@ -5,7 +5,6 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/twosevenska/aesir/forge/mongo"
 	"github.com/twosevenska/aesir/forge/server"
 	"github.com/twosevenska/aesir/splashes"
 )
@@ -31,11 +30,6 @@ func main() {
 	}
 
 	splashes.Splash("forge")
-
-	mongoClient, err := mongo.Connect(conf.MongoHosts, conf.MongoDBName, conf.MongoUser, conf.MongoPassword)
-	if err != nil {
-		log.Fatalf("Failed to connect to MongoDB: %s", err)
-	}
 
 	log.Info("The flames are now roaring in the forge")
 

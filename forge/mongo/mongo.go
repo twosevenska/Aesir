@@ -20,30 +20,30 @@ type Client struct {
 
 //Index represents a MGO index
 type Index struct {
-	collection string
-	keys       []string
-	unique     bool
+	Collection string
+	Keys       []string
+	Unique     bool
 }
 
 //SessionConf represents the basic configuration needed for setting up a session
 type SessionConf struct {
 	//TODO: We could try and use DialInfo to extend
-	mongoHosts []string
-	db         string
-	user       string
-	password   string
-	indexes    []Index
+	MongoHosts []string
+	DB         string
+	User       string
+	Password   string
+	Indexes    []Index
 }
 
 // Connect connects to MongoDB and returns a client
 func Connect(sessionConf SessionConf) (*Client, error) {
-	log.Infof("Connecting to MongoDB @ %s", sessionConf.mongoHosts)
+	log.Infof("Connecting to MongoDB @ %s", sessionConf.MongoHosts)
 
 	dialInfo := &mgo.DialInfo{
-		Addrs:    sessionConf.mongoHosts,
-		Database: sessionConf.db,
-		Username: sessionConf.user,
-		Password: sessionConf.password,
+		Addrs:    sessionConf.MongoHosts,
+		Database: sessionConf.DB,
+		Username: sessionConf.User,
+		Password: sessionConf.Password,
 		Timeout:  time.Second * 10,
 	}
 	session, err := mgo.DialWithInfo(dialInfo)
@@ -52,7 +52,7 @@ func Connect(sessionConf SessionConf) (*Client, error) {
 	}
 
 	createIndices(session, sessionConf)
-	database := session.DB(sessionConf.db)
+	database := session.DB(sessionConf.DB)
 	return &Client{
 		Database: database,
 		session:  session,
@@ -62,9 +62,9 @@ func Connect(sessionConf SessionConf) (*Client, error) {
 func createIndices(s *mgo.Session, sessionConf SessionConf) {
 	session := s.Copy()
 	defer session.Close()
-	for _, i := range sessionConf.indexes {
-		c := session.DB(sessionConf.db).C(i.collection)
-		createIndex(c, i.keys, i.unique)
+	for _, i := range sessionConf.Indexes {
+		c := session.DB(sessionConf.DB).C(i.Collection)
+		createIndex(c, i.Keys, i.Unique)
 	}
 
 }
