@@ -7,6 +7,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
+	"github.com/twosevenska/aesir/forge/mongo"
 )
 
 // Config is a populated by env variables and Vault
@@ -20,14 +21,16 @@ type Config struct {
 
 // ContextParams holds the objects required to initialise the server
 type ContextParams struct {
-	Config Config
+	Config      Config
+	MongoClient *mongo.Client
 }
 
 // Run starts the gin Router and listens forever, recovering from panics
-func Run(c Config) {
+func Run(c Config, mc *mongo.Client) {
 
 	contextParams := ContextParams{
-		Config: c,
+		Config:      c,
+		MongoClient: mc,
 	}
 
 	r := CreateRouter(&contextParams)
@@ -43,6 +46,8 @@ func CreateRouter(contextParams *ContextParams) *gin.Engine {
 	//TODO: Add custom validator later on
 	r := gin.New()
 	r.Use(Logrus(log.StandardLogger()), gin.Recovery())
+
+	r.Use(ContextObjects(contextParams))
 
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -61,6 +66,18 @@ func CreateRouter(contextParams *ContextParams) *gin.Engine {
 		ginpprof.Wrapper(r)
 	}
 	return r
+}
+
+// ContextObjects attaches backend clients to the API context
+func ContextObjects(contextParams *ContextParams) gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		newMongo := contextParams.MongoClient.Copy()
+		defer newMongo.Close()
+
+		c.Set("mongo", newMongo)
+		c.Next()
+	}
 }
 
 // Logrus midleware
